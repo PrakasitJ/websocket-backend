@@ -1,15 +1,17 @@
 import { Elysia, t } from "elysia";
 import { Server, ServerOptions } from "socket.io";
-import { createServer } from "http";
+
+import { createServer, request } from "http";
 import { main } from "./restful/main";
 
 import { chatHandler } from './handlers/chatHandler';
 import { userHandler } from './handlers/userHandler';
 import { imageHandler } from './handlers/imageHandler';
 
-import { writeFile,mkdir } from "fs/promises";
-import { existsSync } from "fs";
+import { writeFile, mkdir } from "fs/promises";
+import { createReadStream, existsSync } from "fs";
 import { FilePayload } from "./types";
+import { streamVideo } from "./restful/services/streaming";
 
 const cors_origin = process.env.CORS_ORIGIN || "*";
 const cors_methods = process.env.CORS_METHODS || "GET,POST,PUT,PATCH,DELETE,OPTIONS";
@@ -44,7 +46,18 @@ io.on("connection", (socket) => {
 
 const app = new Elysia()
   .use(main)
-  .get("/", () => "WebSocket Chat Server")
+  .get("/", () => "Hello, Elysia")
+  .get("/stream/*", async ({ set, headers, params }) => {
+    const videoPath = `public/videos/${params["*"]}`;
+    return streamVideo({ videoPath, headers, set });
+  }, {
+    headers: t.Object({
+      range: t.Optional(t.String())
+    }),
+    params: t.Object({
+      "*": t.String()
+    })
+  })
   .get("/file/:name", async ({ params: { name } }) => {
     const file = Bun.file(`public/files/${name}`);
     return file;
