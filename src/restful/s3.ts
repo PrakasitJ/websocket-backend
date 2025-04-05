@@ -21,7 +21,7 @@ s3.get("/*", async ({ params, set }) => {
         return file;
     } catch (error) {
         set.status = 404;
-        return createFileResponse(false, "File not found", null);
+        return createFileResponse(false, "File not found", params["*"]);
     }
 }, {
     params: t.Object({
@@ -36,7 +36,7 @@ s3.post("/", async ({ body, set }) => {
         return createFileResponse(true, "File uploaded successfully", body.file.name);
     } catch (error) {
         set.status = 404;
-        return createFileResponse(false, "File uploaded failed", null);
+        return createFileResponse(false, "File uploaded failed", body.file.name);
     }
 }, {
     body: t.Object({
@@ -49,10 +49,10 @@ s3.put("/change-name", async ({ body, set }) => {
     const s3 = S3Service.getInstance();
     try {
         await s3.changeFileName(body.oldName, body.newName);
-        return createFileResponse(true, "File uploaded successfully", null);
+        return createFileResponse(true, "File uploaded successfully", `${body.oldName} -> ${body.newName}`);
     } catch (error) {
         set.status = 404;
-        return createFileResponse(false, "File uploaded failed", null);
+        return createFileResponse(false, "File uploaded failed", `${body.oldName} -> ${body.newName}`);
     }
 }, {
     body: t.Object({
@@ -65,10 +65,10 @@ s3.delete("/", async ({ body, set }) => {
     const s3 = S3Service.getInstance();
     try {
         await s3.deleteFile(body.name);
-        return createFileResponse(true, "File deleted successfully", null);
+        return createFileResponse(true, "File deleted successfully", body.name);
     } catch (error) {
         set.status = 404;
-        return createFileResponse(false, "File deleted failed", null);
+        return createFileResponse(false, "File deleted failed", body.name);
     }
 }, {
     body: t.Object({
