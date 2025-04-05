@@ -1,5 +1,6 @@
 import { Elysia } from "elysia";
 import { PaymentController } from "../controllers/paymentController";
+import { CurrencyUnit, PaymentStatus } from "../types/payment";
 
 const payment = new Elysia();
 
@@ -8,9 +9,9 @@ payment.get("/payment", () => {
     paymentController.setPayment({
         id: "1",
         amount: 100,
-        currency: "USD",
+        currency: CurrencyUnit.THB,
         description: "Payment for a product",
-        status: "pending"
+        status: PaymentStatus.PENDING
     });
     paymentController.pay();
     return {
