@@ -6,6 +6,8 @@
     "dev": "bun run --watch src/index.ts"
   },
   "dependencies": {
+    "@types/chokidar": "^2.1.7",
+    "chokidar": "^4.0.3",
     "elysia": "latest",
     "redis": "^4.7.0",
     "socket.io": "^4.8.1"

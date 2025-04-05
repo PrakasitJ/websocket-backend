@@ -13,7 +13,7 @@ services:
       - CHOKIDAR_USEPOLLING=true
     networks:
       - ws-network
-
+    restart: always
 networks:
   ws-network:
     name: ws-network

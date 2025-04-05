@@ -13,10 +13,6 @@ export class HttpServer {
       .use(main)
       .use(payment)
       .use(streaming)
-      .onError(({ code, error }) => {
-        console.error(`HTTP Error [${code}]:`, error);
-        return new Response("Internal Server Error", { status: 500 });
-      });
   }
 
   public static getInstance(): HttpServer {
