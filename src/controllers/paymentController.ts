@@ -1,5 +1,5 @@
 import { PaymentService } from "../services/paymentService";
-import { PaymentConfig } from "../types";
+import { CurrencyUnit, PaymentConfig } from "../types";
 import { WebSocketServer } from "../core/WebSocketServer";
 
 class PaymentController {
@@ -14,7 +14,7 @@ class PaymentController {
             PaymentController.instance = new PaymentController(new PaymentService({
                 id: "1",
                 amount: 100,
-                currency: "USD",
+                currency: CurrencyUnit.USD,
                 description: "Payment for a product",
                 io: WebSocketServer.getInstance().getIO()
             }));
