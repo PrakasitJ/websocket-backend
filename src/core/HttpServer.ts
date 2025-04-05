@@ -3,6 +3,7 @@ import { serverConfig } from "../config/server.config";
 import { main } from "../restful/main";
 import { payment } from "../restful/payment";
 import { streaming } from "../restful/streaming";
+import { s3 } from "../restful/s3";
 
 export class HttpServer {
   private static instance: HttpServer;
@@ -13,6 +14,7 @@ export class HttpServer {
       .use(main)
       .use(payment)
       .use(streaming)
+      .use(s3)
   }
 
   public static getInstance(): HttpServer {
