@@ -3,10 +3,25 @@ import { PaymentConfig } from "../types";
 import { WebSocketServer } from "../core/WebSocketServer";
 
 class PaymentController {
+    private static instance: PaymentController;
     private paymentService: PaymentService;
     constructor(paymentService: PaymentService) {
         this.paymentService = paymentService;
     }
+
+    public static getInstance() {
+        if (!PaymentController.instance) {
+            PaymentController.instance = new PaymentController(new PaymentService({
+                id: "1",
+                amount: 100,
+                currency: "USD",
+                description: "Payment for a product",
+                io: WebSocketServer.getInstance().getIO()
+            }));
+        }
+        return PaymentController.instance;
+    }
+
 
     public async setPayment(payment: PaymentConfig) {
         await this.paymentService?.setPayment(payment);
@@ -63,13 +78,4 @@ class PaymentController {
     }
 }
 
-const paymentController = new PaymentController(new PaymentService({
-    id: "1",
-    amount: 100,
-    currency: "USD",
-    description: "Payment for a product",
-    io: WebSocketServer.getInstance().getIO()
-}));
-
-export { paymentController };
-
+export { PaymentController };

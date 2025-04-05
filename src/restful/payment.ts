@@ -1,9 +1,10 @@
 import { Elysia } from "elysia";
-import { paymentController } from "../controllers/paymentController";
+import { PaymentController } from "../controllers/paymentController";
 
 const payment = new Elysia();
 
 payment.get("/payment", () => {
+    const paymentController = PaymentController.getInstance();
     paymentController.setPayment({
         id: "1",
         amount: 100,
