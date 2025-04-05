@@ -1,5 +1,6 @@
 import { Payment, PaymentConstructor, PaymentConfig } from "../types";
 import { Server } from "socket.io";
+import { BroadcastPayment } from "../socket_commands/commands";
 
 class PaymentService {
     private payment: Payment;
@@ -16,7 +17,7 @@ class PaymentService {
     public async pay() {
         const payment = await this.payment.pay();
         try {
-            this.io.emit("payment_response", payment);
+            BroadcastPayment({ payment, io: this.io });
         } catch (error) {
             console.error(error);
         }
@@ -26,7 +27,7 @@ class PaymentService {
     public async refund() {
         const payment = await this.payment.refund();
         try {
-            this.io.emit("payment_response", payment);
+            BroadcastPayment({ payment, io: this.io });
         } catch (error) {
             console.error(error);
         }
@@ -36,7 +37,7 @@ class PaymentService {
     public async fail() {
         const payment = await this.payment.fail();
         try {
-            this.io.emit("payment_response", payment);
+            BroadcastPayment({ payment, io: this.io });
         } catch (error) {
             console.error(error);
         }
