@@ -18,11 +18,29 @@ class S3Service {
 
   public getS3() {
     return this.s3;
-  } 
+  }
 
-  async exists(fileName: string) {
+  async exists(fileName: string): Promise<boolean> {
     const result = await this.s3.file(fileName).exists();
     return result;
+  }
+
+  async getArrayBuffer(fileName: string) {
+    if (await this.exists(fileName)) {
+      const result = await this.s3.file(fileName).arrayBuffer();
+      return result;
+    }
+    throw new Error("File not found");
+  }
+
+  async getFile(fileName: string) {
+    if (await this.exists(fileName)) {
+      const stat = await this.stat(fileName);
+      const arrayBuffer = await this.getArrayBuffer(fileName);
+      const file = new File([arrayBuffer], fileName, { type: stat.type });
+      return file;
+    }
+    throw new Error("File not found");
   }
 
   async uploadFile(fileName: string, file: File) {
@@ -30,19 +48,31 @@ class S3Service {
     return result;
   }
 
-  async downloadFile(fileName: string) {
-    const result = await this.s3.file(fileName).arrayBuffer();
-    return result;
+  async changeFileName(oldFileName: string, newFileName: string) {
+    if (await this.exists(oldFileName)) {
+      const arrayBuffer = await this.getArrayBuffer(oldFileName);
+      const result = await this.s3.file(newFileName).write(arrayBuffer);
+      await this.deleteFile(oldFileName);
+      return result;
+    }
+    throw new Error("File not found");
   }
 
+
   async deleteFile(fileName: string) {
-    const result = await this.s3.file(fileName).delete();
-    return result;
+    if (await this.exists(fileName)) {
+      const result = await this.s3.file(fileName).delete();
+      return result;
+    }
+    throw new Error("File not found");
   }
 
   async stat(fileName: string) {
-    const result = await this.s3.file(fileName).stat();
-    return result;
+    if (await this.exists(fileName)) {
+      const result = await this.s3.file(fileName).stat();
+      return result;
+    }
+    throw new Error("File not found");
   }
 }
 
