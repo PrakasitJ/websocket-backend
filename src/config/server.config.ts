@@ -13,4 +13,4 @@ export const serverConfig = {
     pingInterval: 25000,
     transports: ["websocket", "polling"]
   }
-}; 
+};

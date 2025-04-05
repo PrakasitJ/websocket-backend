@@ -1,17 +1,20 @@
 import { WebSocketServer } from "./WebSocketServer";
 import { HttpServer } from "./HttpServer";
 import { FileWatcher } from "../services/FileWatcher";
+import { S3Service } from "../services/s3service";
 
 export class ServerManager {
   private static instance: ServerManager;
   private wsServer: WebSocketServer;
   private httpServer: HttpServer;
   private fileWatcher: FileWatcher;
+  private s3Service: S3Service;
 
   private constructor() {
     this.wsServer = WebSocketServer.getInstance();
     this.httpServer = HttpServer.getInstance();
     this.fileWatcher = FileWatcher.getInstance();
+    this.s3Service = S3Service.getInstance();
   }
 
   public static getInstance(): ServerManager {

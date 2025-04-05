@@ -95,6 +95,7 @@ export class FileWatcher {
     // Error handling
     this.watcher.on('error', (err: unknown) => {
       console.error('File watcher error:', err);
+      throw new Error('File watcher error');
     });
 
     // Ready event
