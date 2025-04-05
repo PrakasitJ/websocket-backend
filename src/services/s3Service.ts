@@ -35,8 +35,8 @@ class S3Service {
 
   async getFile(fileName: string) {
     if (await this.exists(fileName)) {
-      const stat = await this.stat(fileName);
-      const arrayBuffer = await this.getArrayBuffer(fileName);
+      const stat = await this.s3.file(fileName).stat();
+      const arrayBuffer = await this.s3.file(fileName).arrayBuffer();
       const file = new File([arrayBuffer], fileName, { type: stat.type });
       return file;
     }
@@ -50,9 +50,9 @@ class S3Service {
 
   async changeFileName(oldFileName: string, newFileName: string) {
     if (await this.exists(oldFileName)) {
-      const arrayBuffer = await this.getArrayBuffer(oldFileName);
+      const arrayBuffer = await this.s3.file(oldFileName).arrayBuffer();
       const result = await this.s3.file(newFileName).write(arrayBuffer);
-      await this.deleteFile(oldFileName);
+      await this.s3.file(oldFileName).delete();
       return result;
     }
     throw new Error("File not found");
