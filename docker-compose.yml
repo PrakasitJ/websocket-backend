@@ -14,6 +14,10 @@ services:
     networks:
       - ws-network
     restart: always
+    depends_on:
+      - minio
+      - redis
+      - redisinsight
   minio:
     image: minio/minio:latest
     ports:
