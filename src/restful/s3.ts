@@ -45,6 +45,22 @@ s3.post("/", async ({ body, set }) => {
     })
 })
 
+s3.post("/multipart", async ({ body, set }) => {
+    const s3 = S3Service.getInstance();
+    try {
+        const result = await s3.multipartUploadFiles(body.name, body.file);
+        return result;
+    } catch (error) {
+        set.status = 404;
+        return createFileResponse(false, "File uploaded failed", body.file.name);
+    }
+}, {
+    body: t.Object({
+        name: t.String(),
+        file: t.File()
+    })
+})
+
 s3.put("/change-name", async ({ body, set }) => {
     const s3 = S3Service.getInstance();
     try {

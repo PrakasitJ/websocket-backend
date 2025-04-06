@@ -48,6 +48,32 @@ class S3Service {
     return result;
   }
 
+  async multipartUploadFiles(fileName: string, file: File) {
+    try {
+      const s3file = this.s3.file(fileName);
+      const writer = s3file.writer({
+      partSize: file.size/255, // split file into 255 parts
+      queueSize: 255, // Upload 255 parts in parallel
+      retry: 3 // Retry failed parts
+    });
+    for await (const chunk of file.stream()) {
+      writer.write(chunk);
+    }
+    await writer.end();
+    return {
+        success: true,
+        message: "Mutipart File uploaded successfully",
+        file: fileName,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: "Mutipart File uploaded failed",
+        file: fileName,
+      };
+    }
+  }
+
   async changeFileName(oldFileName: string, newFileName: string) {
     if (await this.exists(oldFileName)) {
       const arrayBuffer = await this.s3.file(oldFileName).arrayBuffer();
