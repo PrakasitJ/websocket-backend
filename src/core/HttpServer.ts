@@ -4,6 +4,7 @@ import { main } from "../restful/main";
 import { payment } from "../restful/payment";
 import { streaming } from "../restful/streaming";
 import { s3 } from "../restful/s3";
+import { redis } from "../restful/redis";
 
 export class HttpServer {
   private static instance: HttpServer;
@@ -15,6 +16,7 @@ export class HttpServer {
       .use(payment)
       .use(streaming)
       .use(s3)
+      .use(redis);
   }
 
   public static getInstance(): HttpServer {

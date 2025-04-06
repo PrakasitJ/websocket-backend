@@ -28,8 +28,35 @@ services:
     restart: always
     networks:
       - ws-network
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    restart: always
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - REDIS_USERNAME=redis
+      - REDIS_PASSWORD=redispassword
+    volumes:
+      - redis:/data
+    networks:
+      - ws-network
+  redisinsight:
+    image: redislabs/redisinsight:latest
+    container_name: redisinsight
+    ports:
+      - "5540:5540"
+    environment:
+      - RI_ENCRYPTION_KEY=abcdefg
+    volumes:
+      - redisinsight:/data
+    restart: always
+    networks:
+      - ws-network
 volumes:
   minio:
+  redis:
+  redisinsight:
 networks:
   ws-network:
     name: ws-network
