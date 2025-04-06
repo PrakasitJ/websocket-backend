@@ -1,5 +1,5 @@
 import { Elysia, t } from "elysia";
-import { S3Service } from "../services/s3service";
+import { S3Service } from "../services/s3Service";
 import { FileResponse } from "../types";
 
 const s3 = new Elysia({
