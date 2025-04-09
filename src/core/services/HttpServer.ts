@@ -1,10 +1,6 @@
 import { Elysia } from "elysia";
 import { serverConfig } from "../../config/server.config";
-import { main } from "../../protocols/rest/routes/main";
-import { payment } from "../../protocols/rest/routes/payment";
-import { streaming } from "../../protocols/rest/routes/streaming";
-import { s3 } from "../../protocols/rest/routes/s3";
-import { redis } from "../../protocols/rest/routes/redis";
+import { main, payment, streaming, s3, redis } from "../../protocols/rest/routes/index";
 
 export class HttpServer {
   private static instance: HttpServer;

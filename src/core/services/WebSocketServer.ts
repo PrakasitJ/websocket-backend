@@ -1,10 +1,7 @@
 import { Server, ServerOptions } from "socket.io";
 import { createServer } from "http";
 import { serverConfig } from "../../config/server.config";
-import { chatHandler } from '../../protocols/websocket/handlers/chatHandler';
-import { userHandler } from '../../protocols/websocket/handlers/userHandler';
-import { imageHandler } from '../../protocols/websocket/handlers/imageHandler';
-import { paymentHandler } from "../../protocols/websocket/handlers/paymentHandler";
+import { chatHandler, userHandler, imageHandler, paymentHandler } from "../../protocols/websocket/handlers/index";
 
 export class WebSocketServer {
   private static instance: WebSocketServer;

@@ -1,15 +1,15 @@
 import { WebSocketServer } from "../../../core/services/WebSocketServer";
-import { streamVideo } from "../middleware/streamingService";
-import { writeFile, mkdir } from "fs/promises";
-import { existsSync } from "fs";
-import { IFilePayload } from "../../../core/interfaces/index";
+import { StreamingService } from "../middleware/streamingService";
+import { FileService } from "../middleware/fileService";
 import Elysia, { t } from "elysia";
 
 const streaming = new Elysia();
+const streamingService = StreamingService.getInstance();
+const fileService = FileService.getInstance();
 
 streaming.get("/stream/*", async ({ set, headers, params }) => {
     const videoPath = `public/videos/${params["*"]}`;
-    return streamVideo({ videoPath, headers, set });
+    return streamingService.streamVideo({ videoPath, headers, set });
 }, {
     headers: t.Object({
         range: t.Optional(t.String())
@@ -27,37 +27,8 @@ streaming.get("/stream/*", async ({ set, headers, params }) => {
         })
     })
     .post("/upload_file", async ({ body: { file, username } }) => {
-        const file_buffer = await file.arrayBuffer();
-        try {
-            if (!existsSync("public/files")) {
-                await mkdir("public/files", { recursive: true });
-            }
-            await writeFile("public/files/" + file.name, Buffer.from(file_buffer));
-        } catch (error) {
-            console.error("Error saving file:", error);
-            throw error;
-        }
-
-        try {
-            const wsServer = WebSocketServer.getInstance();
-            wsServer.getIO().emit("finish", {
-                message: "Finish uploading file",
-                file_name: file.name,
-                original_file_name: file.name,
-                file_type: file.type,
-                file_path: streaming.server?.url + "file/" + file.name
-            } as IFilePayload);
-        } catch (error) {
-            console.error("Error emitting WebSocket event:", error);
-        }
-
-        return {
-            message: "Finish uploading file",
-            file_name: file.name,
-            original_file_name: file.name,
-            file_type: file.type,
-            file_path: streaming.server?.url + "file/" + file.name
-        } as IFilePayload;
+        const serverUrl = streaming.server?.url?.toString() || "";
+        return fileService.handleFileUpload(file, username, serverUrl);
     }, {
         body: t.Object({
             file: t.File(),
