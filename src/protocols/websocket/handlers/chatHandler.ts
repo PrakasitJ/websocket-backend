@@ -5,5 +5,5 @@ export const chatHandler = (io: Server, socket: Socket) => {
     ListenOnJoinRoom({ socket });
     ListenOnLeaveRoom({ socket });
     ListenOnSendMessage({ socket });
-    ListenOnFastMessage({ socket });
+    ListenOnFastMessage({ io, socket });
 };

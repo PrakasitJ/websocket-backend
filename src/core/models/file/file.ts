@@ -1,4 +1,4 @@
-import { IFilePayload } from "../interfaces/index";
+import { IFilePayload } from "../../interfaces/index";
 
 export class File implements IFilePayload {
     message: string;

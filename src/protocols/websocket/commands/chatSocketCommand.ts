@@ -1,8 +1,9 @@
-import { Socket } from "socket.io";
+import { Server, Socket } from "socket.io";
 import { ChatEmitterEvent, ChatListenerEvent } from "../sockets/event";
 import { getUsername } from "../utils/params";
 import { state } from "../sockets/state";
 import { FastMessage, Message } from "../../../core/models";
+import { IFastMessage } from "../../../core/interfaces/chatInterface";
 
 export function ListenOnJoinRoom({ socket }: { socket: Socket }) {
     socket.on(ChatListenerEvent.JOIN_ROOM, ({ room_id }: { room_id: string }) => {
@@ -27,26 +28,14 @@ export function ListenOnSendMessage({ socket }: { socket: Socket }) {
     socket.on(ChatListenerEvent.SEND_MESSAGE, ({ room_id, message }: { room_id: string, message: string }) => {
         const username = getUsername(socket);
         if (state.rooms.has(room_id)) {
-            state.rooms.get(room_id)?.users.forEach((user) => {
-                responseMessage({ socket: user.socket, message: {
-                    content: message,
-                    sender: username,
-                    timestamp: new Date().toISOString()
-                } as Message });
-            });
+            state.rooms.get(room_id)?.users.forEach((user) => user.socket.emit(ChatEmitterEvent.MESSAGE, new Message(message, username).toJSON()));
         }
     });
 }
 
-export function ListenOnFastMessage({ socket }: { socket: Socket }) {
-    socket.on(ChatListenerEvent.FAST_MESSAGE, (payload: FastMessage) => {
-        state.users.forEach((user) => {
-            responseMessage({ socket: user.socket, message: {
-                content: payload.message,
-                sender: getUsername(socket),
-                timestamp: new Date().toISOString()
-            } as Message });
-        });
+export function ListenOnFastMessage({ io, socket }: { io: Server, socket: Socket }) {
+    socket.on(ChatListenerEvent.FAST_MESSAGE, (payload: IFastMessage) => {
+        io.emit(ChatEmitterEvent.MESSAGE, new FastMessage(payload.message).setSenderToAnnonymous().useHelloMapper().useWorldMapper().useGhostMapper().toJSON());
     });
 }
 

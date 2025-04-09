@@ -1,4 +1,4 @@
-import { IFileResponse } from "../interfaces/index";
+import { IFileResponse } from "../../interfaces/index";
 
 export class S3Response implements IFileResponse {
     success: boolean;

@@ -1,4 +1,4 @@
-import { CurrencyUnit, PaymentStatus, IPaymentConfig } from "../interfaces/index";
+import { CurrencyUnit, PaymentStatus, IPaymentConfig } from "../../interfaces/index";
 
 export class Payment {
   private id: string;

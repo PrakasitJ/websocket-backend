@@ -1,4 +1,4 @@
-import { IUser } from "../interfaces/index";
+import { IUser } from "../../interfaces/index";
 import { Socket } from "socket.io";
 
 export class User implements IUser {
