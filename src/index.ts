@@ -1,4 +1,4 @@
-import { ServerManager } from "./core/ServerManager";
+import { ServerManager } from "./core/services/ServerManager";
 
 /**
  * Main application entry point
